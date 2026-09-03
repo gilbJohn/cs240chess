@@ -50,6 +50,4 @@ java -jar client/target/client-jar-with-dependencies.jar
 
 ♕ 240 Chess Client: chess.ChessPiece@7852e922
 ```
-## Aditional Notes
-- Need to learn all of this stuff
-- intellajade?? That is the client that we are recommended to use??
+
