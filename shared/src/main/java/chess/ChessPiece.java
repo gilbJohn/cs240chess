@@ -129,16 +129,173 @@ public class ChessPiece {
             return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
         }
         if (piece.getPieceType() == PieceType.KING) {
-            return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
+            int[][] directions = {
+                    {-1,-1},
+                    {1,-1},
+                    {-1,1},
+                    {1,1},
+                    {-1,0},
+                    {0,-1},
+                    {1,0},
+                    {0,1}
+            };
+
+            for (int[] direction : directions){
+                row = myPosition.getRow();
+                col = myPosition.getColumn();
+
+                    row += direction[0];
+                    col += direction[1];
+
+                    if (row > 8 || row < 1 || col > 8 || col < 1) {
+                        continue;
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(row, col);
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+
+
+                    if(board.getPiece(newPosition) == null) {
+                        moves.add(newMove);
+                    }
+
+                    else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        moves.add(newMove);
+                    }
+            }
+            return moves;
         }
+        // Rook Logic
         if (piece.getPieceType() == PieceType.ROOK) {
-            return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
+            int[][] directions = {
+                    {-1, 0},
+                    {0,-1},
+                    {1,0},
+                    {0,1}
+            };
+
+            for (int[] direction : directions){
+                row = myPosition.getRow();
+                col = myPosition.getColumn();
+
+                boolean blocked = false;
+
+                while (!blocked) {
+
+                    row += direction[0];
+                    col += direction[1];
+
+                    if (row > 8 || row < 1 || col > 8 || col < 1) {
+                        break;
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(row, col);
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+
+
+                    if(board.getPiece(newPosition) == null) {
+                        moves.add(newMove);
+                    }
+
+                    else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        moves.add(newMove);
+                        blocked = true;
+                    }
+
+                    else if (board.getPiece(newPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                        blocked = true;
+                    }
+                }
+
+
+            }
+
+
+            return moves;
         }
         if (piece.getPieceType() == PieceType.QUEEN) {
-            return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
+            int[][] directions = {
+                    {-1,-1},
+                    {1,-1},
+                    {-1,1},
+                    {1,1},
+                    {-1,0},
+                    {0,-1},
+                    {1,0},
+                    {0,1}
+            };
+
+            for (int[] direction : directions){
+                row = myPosition.getRow();
+                col = myPosition.getColumn();
+
+                boolean blocked = false;
+
+                while (!blocked) {
+
+                    row += direction[0];
+                    col += direction[1];
+
+                    if (row > 8 || row < 1 || col > 8 || col < 1) {
+                        break;
+                    }
+
+                    ChessPosition newPosition = new ChessPosition(row, col);
+                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+
+
+                    if(board.getPiece(newPosition) == null) {
+                        moves.add(newMove);
+                    }
+
+                    else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        moves.add(newMove);
+                        blocked = true;
+                    }
+
+                    else if (board.getPiece(newPosition).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                        blocked = true;
+                    }
+                }
+            }
+            return moves;
         }
         if (piece.getPieceType() == PieceType.KNIGHT) {
-            return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
+            int[][] directions = {
+                    {1,2},
+                    {2,1},
+                    {-1,2},
+                    {2,-1},
+                    {1,-2},
+                    {-2,1},
+                    {-1,-2},
+                    {-2,-1}
+            };
+
+            for (int[] direction : directions){
+                row = myPosition.getRow();
+                col = myPosition.getColumn();
+
+                row += direction[0];
+                col += direction[1];
+
+                if (row > 8 || row < 1 || col > 8 || col < 1) {
+                    continue;
+                }
+
+                ChessPosition newPosition = new ChessPosition(row, col);
+                ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+
+
+                if(board.getPiece(newPosition) == null) {
+                    moves.add(newMove);
+                }
+
+                else if (board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    moves.add(newMove);
+                }
+            }
+            return moves;
         }
         return List.of();
     }
