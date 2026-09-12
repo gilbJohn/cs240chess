@@ -126,7 +126,44 @@ public class ChessPiece {
             return moves;
         }
         if (piece.getPieceType() == PieceType.PAWN) {
-            return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
+            int direction;
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                direction = 1;
+            }
+            else {
+                direction = -1;
+            }
+            row = myPosition.getRow();
+            col = myPosition.getColumn();
+
+            ChessPosition newPosition = new ChessPosition(row + direction, col);
+            ChessPosition attackLeft = new ChessPosition(row + direction, col + 1);
+            ChessPosition attackRight = new ChessPosition(row + direction, col - 1);
+
+
+            if (board.getPiece(newPosition) == null ) {
+                if (newPosition.getRow() == 8 || newPosition.getRow() == 1) {
+                    ChessMove forwardMoveKnight = new ChessMove(myPosition,newPosition, PieceType.KNIGHT);
+                    ChessMove forwardMoveQueen = new ChessMove(myPosition, newPosition, PieceType.QUEEN);
+                    ChessMove forwardMoveRook = new ChessMove(myPosition, newPosition, PieceType.ROOK);
+                    ChessMove forwardMoveBishop = new ChessMove(myPosition, newPosition, PieceType.BISHOP);
+                }
+                else  {
+                    ChessMove forwardMove = new ChessMove(myPosition, newPosition, null);
+                }
+            }
+            if (board.getPiece(attackLeft).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+
+            }
+            if (board.getPiece(attackRight).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+
+            }
+            if ((myPosition.getRow() == 7 && piece.getTeamColor() == ChessGame.TeamColor.WHITE) || (myPosition.getRow() == 2 && piece.getTeamColor() == ChessGame.TeamColor.WHITE)) {
+
+            }
+
+
+          return
         }
         if (piece.getPieceType() == PieceType.KING) {
             int[][] directions = {
