@@ -163,7 +163,7 @@ public class ChessPiece {
             }
 
 
-          return
+          return null;
         }
         if (piece.getPieceType() == PieceType.KING) {
             int[][] directions = {

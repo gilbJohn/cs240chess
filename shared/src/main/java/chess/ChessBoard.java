@@ -24,7 +24,7 @@ public class ChessBoard {
         return Arrays.deepHashCode(board);
     }
 
-    final private ChessPiece[][] board = new ChessPiece[8][8];
+    private ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
         
@@ -55,6 +55,58 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[8][8];
+
+        ChessPiece.PieceType[] pieceTypes = {
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT,
+                ChessPiece.PieceType.ROOK
+
+        };
+
+        // ====================== //
+        // Black Pieces //
+        // ====================== //
+        int mainRowBlack  = 8;
+        int mainColBlack = 1;
+        for (ChessPiece.PieceType piece: pieceTypes) {
+            ChessPosition mainPosition = new ChessPosition(mainRowBlack, mainColBlack);
+            mainColBlack++;
+            ChessPiece mainPiece = new ChessPiece(ChessGame.TeamColor.BLACK, piece);
+            addPiece(mainPosition, mainPiece);
+        }
+
+
+        int pawnRowBlack = 7;
+        for (int col = 1; col <= 8; col++) {
+            ChessPosition pawnPosition = new ChessPosition(pawnRowBlack, col);
+            ChessPiece blackPawn = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            addPiece(pawnPosition, blackPawn);
+        }
+
+        // ====================== //
+        // White Pieces //
+        // ====================== //
+        int mainRowWhite  = 1;
+        int mainColWhite = 1;
+        for (ChessPiece.PieceType piece: pieceTypes) {
+            ChessPosition mainPosition = new ChessPosition(mainRowWhite, mainColWhite);
+            mainColWhite++;
+            ChessPiece mainPiece = new ChessPiece(ChessGame.TeamColor.WHITE, piece);
+            addPiece(mainPosition, mainPiece);
+        }
+
+
+        int pawnRowWhite = 2;
+        for (int col = 1; col <= 8; col++) {
+            ChessPosition pawnPosition = new ChessPosition(pawnRowWhite, col);
+            ChessPiece whitePawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            addPiece(pawnPosition, whitePawn);
+        }
     }
 }
