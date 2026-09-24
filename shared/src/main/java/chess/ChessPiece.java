@@ -1,6 +1,5 @@
 package chess;
 
-import java.awt.desktop.QuitEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -72,32 +71,7 @@ public class ChessPiece {
                     {-1, 1},
                     {-1, -1}
             };
-
-            for(int[] direction : directions) {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-
-                while(true) {
-                    row += direction[0];
-                    col += direction[1];
-
-                    if(row < 1 || row > 8 || col < 1 || col > 8) {
-                        break;
-                    }
-
-                    ChessPosition newPosition = new ChessPosition(row, col);
-                    if(board.getPiece(newPosition) == null) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
-                    }
-                    else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-            }
+            slidingMove(board, myPosition, directions, piece, moves);
         }
 
         if(piece.getPieceType() == PieceType.ROOK) {
@@ -107,34 +81,9 @@ public class ChessPiece {
                     {-1, 0},
                     {0, -1}
             };
-
-            for(int[] direction : directions) {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-
-                while(true) {
-                    row += direction[0];
-                    col += direction[1];
-
-                    if(row < 1 || row > 8 || col < 1 || col > 8) {
-                        break;
-                    }
-
-                    ChessPosition newPosition = new ChessPosition(row, col);
-                    if(board.getPiece(newPosition) == null) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
-                    }
-                    else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-            }
-
+            slidingMove(board, myPosition, directions, piece, moves);
         }
+
         if(piece.getPieceType() == PieceType.QUEEN) {
             int[][] directions = {
                     {1,1},
@@ -147,31 +96,7 @@ public class ChessPiece {
                     {0, -1}
             };
 
-            for(int[] direction : directions) {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-
-                while(true) {
-                    row += direction[0];
-                    col += direction[1];
-
-                    if(row < 1 || row > 8 || col < 1 || col > 8) {
-                        break;
-                    }
-
-                    ChessPosition newPosition = new ChessPosition(row, col);
-                    if(board.getPiece(newPosition) == null) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
-                    }
-                    else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
-                        moves.add(new ChessMove(myPosition, newPosition, null));
-                        break;
-                    }
-                    else{
-                        break;
-                    }
-                }
-            }
+            slidingMove(board, myPosition, directions, piece, moves);
         }
         if(piece.getPieceType() == PieceType.KING) {
 
@@ -185,27 +110,9 @@ public class ChessPiece {
                     {-1, 0},
                     {0, -1}
             };
-
-            for(int[] direction : directions) {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-
-                row += direction[0];
-                col += direction[1];
-
-                if(row < 1 || row > 8 || col < 1 || col > 8) {
-                    continue;
-                }
-
-                ChessPosition newPosition = new ChessPosition(row, col);
-                if(board.getPiece(newPosition) == null) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-                else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-            }
+            singleMove(board, myPosition, directions, piece, moves);
         }
+
         if(piece.getPieceType() == PieceType.KNIGHT) {
 
             int[][] directions = {
@@ -218,27 +125,7 @@ public class ChessPiece {
                     {-1, -2},
                     {-2, -1}
             };
-
-            for(int[] direction : directions) {
-                int row = myPosition.getRow();
-                int col = myPosition.getColumn();
-
-                row += direction[0];
-                col += direction[1];
-
-                if(row < 1 || row > 8 || col < 1 || col > 8) {
-                    continue;
-                }
-
-                ChessPosition newPosition = new ChessPosition(row, col);
-                if(board.getPiece(newPosition) == null) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-                else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-            }
-
+            singleMove(board, myPosition, directions, piece, moves);
         }
 
 
@@ -318,11 +205,64 @@ public class ChessPiece {
             }
 
         }
-
-
         return moves;
     }
 
+
+
+    private boolean isNotOnboard(int row, int col) {
+        return row > 8 || row < 1 || col < 1 || col > 8;
+    }
+
+    private void slidingMove(ChessBoard board, ChessPosition myPosition, int[][] directions, ChessPiece piece, Collection<ChessMove> moves) {
+        for(int[] direction : directions) {
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+
+            while(true) {
+                row += direction[0];
+                col += direction[1];
+
+                if(isNotOnboard(row, col)) {
+                    break;
+                }
+
+                ChessPosition newPosition = new ChessPosition(row, col);
+                if(board.getPiece(newPosition) == null) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+                else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+        }
+    }
+
+    private void singleMove(ChessBoard board, ChessPosition myPosition, int[][] directions, ChessPiece piece, Collection<ChessMove> moves) {
+        for(int[] direction : directions) {
+
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+                row += direction[0];
+                col += direction[1];
+
+                if(isNotOnboard(row, col)) {
+                    continue;
+                }
+
+                ChessPosition newPosition = new ChessPosition(row, col);
+                if(board.getPiece(newPosition) == null) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+                else if (board.getPiece(newPosition).getTeamColor() != piece.getTeamColor()) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+    }
 
     // Additional things
 
