@@ -10,24 +10,10 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(board, that.board);
-    }
 
-    @Override
-    public int hashCode() {
-        return Arrays.deepHashCode(board);
-    }
-
-    private ChessPiece[][] board = new ChessPiece[8][8];
-
+    ChessPiece[][] board = new ChessPiece[8][8];
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -39,6 +25,7 @@ public class ChessBoard {
     public void addPiece(ChessPosition position, ChessPiece piece) {
         board[position.getRow()-1][position.getColumn()-1] = piece;
     }
+
     /**
      * Gets a chess piece on the chessboard
      *
@@ -57,7 +44,7 @@ public class ChessBoard {
     public void resetBoard() {
         board = new ChessPiece[8][8];
 
-        ChessPiece.PieceType[] pieceTypes = {
+        ChessPiece.PieceType[] pieces = {
                 ChessPiece.PieceType.ROOK,
                 ChessPiece.PieceType.KNIGHT,
                 ChessPiece.PieceType.BISHOP,
@@ -66,47 +53,44 @@ public class ChessBoard {
                 ChessPiece.PieceType.BISHOP,
                 ChessPiece.PieceType.KNIGHT,
                 ChessPiece.PieceType.ROOK
-
         };
 
-        // ====================== //
-        // Black Pieces //
-        // ====================== //
-        int mainRowBlack  = 8;
-        int mainColBlack = 1;
-        for (ChessPiece.PieceType piece: pieceTypes) {
-            ChessPosition mainPosition = new ChessPosition(mainRowBlack, mainColBlack);
-            mainColBlack++;
-            ChessPiece mainPiece = new ChessPiece(ChessGame.TeamColor.BLACK, piece);
-            addPiece(mainPosition, mainPiece);
+        int col = 1;
+
+        for(ChessPiece.PieceType piece: pieces) {
+            // Black Pieces
+            addPiece(new ChessPosition(8, col), new ChessPiece(ChessGame.TeamColor.BLACK, piece));
+            addPiece(new ChessPosition(7, col), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+
+            // empty board
+
+            //White Pieces
+            addPiece(new ChessPosition(2, col), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+            addPiece(new ChessPosition(1, col), new ChessPiece(ChessGame.TeamColor.WHITE, piece));
+
+            //iterate
+            col++;
         }
+    }
 
-
-        int pawnRowBlack = 7;
-        for (int col = 1; col <= 8; col++) {
-            ChessPosition pawnPosition = new ChessPosition(pawnRowBlack, col);
-            ChessPiece blackPawn = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
-            addPiece(pawnPosition, blackPawn);
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
+        ChessBoard that = (ChessBoard) o;
+        return Objects.deepEquals(board, that.board);
+    }
 
-        // ====================== //
-        // White Pieces //
-        // ====================== //
-        int mainRowWhite  = 1;
-        int mainColWhite = 1;
-        for (ChessPiece.PieceType piece: pieceTypes) {
-            ChessPosition mainPosition = new ChessPosition(mainRowWhite, mainColWhite);
-            mainColWhite++;
-            ChessPiece mainPiece = new ChessPiece(ChessGame.TeamColor.WHITE, piece);
-            addPiece(mainPosition, mainPiece);
-        }
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(board);
+    }
 
-
-        int pawnRowWhite = 2;
-        for (int col = 1; col <= 8; col++) {
-            ChessPosition pawnPosition = new ChessPosition(pawnRowWhite, col);
-            ChessPiece whitePawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-            addPiece(pawnPosition, whitePawn);
-        }
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "board=" + Arrays.toString(board) +
+                '}';
     }
 }
