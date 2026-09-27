@@ -254,4 +254,6 @@ public class ChessGame {
     public int hashCode() {
         return Objects.hash(board, teamTurn);
     }
+
+    // I swear I added this stuff
 }
