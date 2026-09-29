@@ -56,7 +56,6 @@ public class ChessGame {
             return null;
         }
 
-
         ChessPiece piece = board.getPiece(startPosition);
 
         Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
@@ -78,8 +77,6 @@ public class ChessGame {
                 validMoves.add(move);
             }
         }
-
-
         return validMoves;
     }
 
