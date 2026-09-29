@@ -131,20 +131,24 @@ public class ChessGame {
 
         for(int row = 1; row <= 8; row++) {
             for(int col = 1; col <= 8; col++) {
+
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(position);
 
-                if(piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, position);
+                if(piece == null || piece.getTeamColor() == teamColor) {
+                    continue;
+                }
 
-                    for (ChessMove move: moves) {
-                        if(move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
+                Collection<ChessMove> moves = piece.pieceMoves(board, position);
+
+                for (ChessMove move: moves) {
+                    if(move.getEndPosition().equals(kingPosition)) {
+                        return true;
                     }
                 }
             }
         }
+
         return false;
     }
 
