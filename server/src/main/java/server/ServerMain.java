@@ -16,9 +16,8 @@ public class ServerMain {
         return UUID.randomUUID().toString();
     }
 
-    public class MomoryDataAccess {
+    public class MemoryDataAccess {
         public void clear() {
-            
         }
     }
 }
