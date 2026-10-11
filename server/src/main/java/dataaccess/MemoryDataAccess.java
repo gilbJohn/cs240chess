@@ -18,4 +18,37 @@ public class MemoryDataAccess implements DataAccess{
         games.clear();
         authTokens.clear();
     }
+
+    public void createUser(UserData user) {
+        users.put(user.username(), user);
+    }
+
+    public UserData getUser(String username) {
+        return users.get(username);
+    }
+
+//    public void createGame(UserData user){
+//
+//    }
+
+    public Map<String, GameData> listGames() {
+        return games;
+    }
+
+//    public GameData getGame() {
+//
+//        return null;
+//    }
+
+//    public void updateGame() {
+//
+//    }
+
+//    public void createAuth(String token) {
+//
+//    }
+
+    public AuthData getAuth(String auth) {
+        return authTokens.get(auth);
+    }
 }
