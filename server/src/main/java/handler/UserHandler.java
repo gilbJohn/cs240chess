@@ -26,7 +26,7 @@ public class UserHandler {
 
             ctx.status(200);
             ctx.contentType("application/json");
-            ctx.result(gson.toJson(Map.of("AuthData", result)));
+            ctx.result(gson.toJson(result));
         }
         catch (BadRequestResponse error) {
             ctx.status(400);
@@ -49,7 +49,7 @@ public class UserHandler {
 
             context.status(200);
             context.contentType("application/json");
-            context.result(gson.toJson(Map.of("username", result)));
+            context.result(gson.toJson(result));
         } catch (UnauthorizedResponse error) {
             context.status(401);
             context.contentType("application/json");

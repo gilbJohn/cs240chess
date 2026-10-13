@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ForbiddenResponse;
+import io.javalin.http.UnauthorizedResponse;
 import model.UserData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,82 @@ public class UserServiceTest {
         assertThrows(ForbiddenResponse.class, () -> service.register(user2));
 
         assertEquals(user1, dataAccess.getUser(user1.username()));
+    }
+
+    @Test
+    @DisplayName("SuccessFul Login")
+    public void SuccessFulLogin() throws UnauthorizedResponse {
+        var dataAccess = new MemoryDataAccess();
+        var service = new UserService(dataAccess);
+
+        var user = new UserData("username", "password", "email");
+
+        service.register(user);
+
+        var auth = assertDoesNotThrow(() -> service.login(user));
+
+        assertEquals(auth.username(), user.username());
+        assertNotNull(auth.authToken());
+        assertEquals(auth, dataAccess.getAuth(auth.authToken()));
+    }
+
+    @Test
+    @DisplayName("Unauthorized Login")
+    public void UnauthorizedLogin() throws UnauthorizedResponse {
+
+        var dataAccess = new MemoryDataAccess();
+        var service = new UserService(dataAccess);
+
+        var user = new UserData("username", "password", "email");
+
+        service.register(user);
+
+        var fakeUser = new UserData("Dumb", "Dumb", "Dumb");
+
+        assertThrows(UnauthorizedResponse.class, () -> service.login(fakeUser));
+
+        assertNull(dataAccess.getUser(fakeUser.username()));
+    }
+
+    @Test
+    @DisplayName("SuccessFul Logout")
+    public void SuccessFulLogout() throws ForbiddenResponse {
+        var dataAccess = new MemoryDataAccess();
+        var service = new UserService(dataAccess);
+
+        var user = new UserData("username", "password", "email");
+
+        service.register(user);
+        service.login(user);
+
+        var auth = assertDoesNotThrow(() -> service.login(user));
+
+        assertEquals(auth.username(), user.username());
+        assertNotNull(auth.authToken());
+        assertEquals(auth, dataAccess.getAuth(auth.authToken()));
+
+        assertDoesNotThrow(() -> service.logOut((auth.authToken())));
+
+        assertNull(dataAccess.getAuth(auth.authToken()));
+    }
+    @Test
+    @DisplayName("Unauthorized Logout")
+    public void UnauthorizedLogout() throws ForbiddenResponse {
+        var dataAccess = new MemoryDataAccess();
+        var service = new UserService(dataAccess);
+
+        var user = new UserData("username", "password", "email");
+
+        service.register(user);
+        service.login(user);
+
+        var auth = assertDoesNotThrow(() -> service.login(user));
+
+        assertEquals(auth.username(), user.username());
+        assertNotNull(auth.authToken());
+        assertEquals(auth, dataAccess.getAuth(auth.authToken()));
+
+        assertThrows(UnauthorizedResponse.class, () -> service.logOut("fake Token"));
     }
 
 }
