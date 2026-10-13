@@ -52,4 +52,8 @@ public class MemoryDataAccess implements DataAccess{
     public AuthData getAuth(String auth) {
         return authTokens.get(auth);
     }
+
+    public void deleteAuth(String token) {
+        authTokens.remove(token);
+    }
 }
