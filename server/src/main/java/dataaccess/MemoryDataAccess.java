@@ -13,6 +13,7 @@ public class MemoryDataAccess implements DataAccess{
     private final Map<String, UserData> users = new HashMap<>();
     private final Map<Integer, GameData> games = new HashMap<>();
     private final Map<String, AuthData> authTokens = new HashMap<>();
+    public int gameID = 0;
 
     @Override
     public void clear() {
@@ -41,8 +42,8 @@ public class MemoryDataAccess implements DataAccess{
         return games.get(gameID);
     }
 
-    public void updateGame() {
-
+    public void updateGame(GameData game) {
+        games.put(game.gameID(), game);
     }
 
     public void createAuth(AuthData auth) {

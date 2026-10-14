@@ -1,11 +1,15 @@
 package handler;
 
 import com.google.gson.Gson;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
+import model.GameData;
 import model.UserData;
 import org.jetbrains.annotations.NotNull;
 import service.GameService;
+
+import java.util.Map;
 
 public class GameHandler {
     private final GameService gameService;
@@ -14,17 +18,20 @@ public class GameHandler {
         this.gameService = gameService;
     }
 
-    public static void listGames(@NotNull Context context) {
+    public void listGames(@NotNull Context context) {
         try {
-
-        } catch (UnauthorizedResponse error){
             var gson = new Gson();
             String token = context.header("authorization");
 
-            var result = GameService.listGames(token);
+            var result = gameService.listGames(token);
             context.status(200);
             context.contentType("application/json");
-            context.result(gson.toJson(result));
+            context.result(gson.toJson(Map.of("games", result)));
+
+        } catch (UnauthorizedResponse error){
+            context.status(401);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
     }
 
@@ -33,13 +40,21 @@ public class GameHandler {
             var gson = new Gson();
             String token = context.header("authorization");
 
-            var result = GameService.createGame(token);
+            var game = gson.fromJson(context.body(), GameData.class);
+
+            var result = gameService.createGame(token, game);
             context.status(200);
             context.contentType("application/json");
-            context.result(gson.toJson(result));
+            context.result(gson.toJson(Map.of("gamesID", result)));
 
         } catch (UnauthorizedResponse error) {
-
+            context.status(401);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        } catch (BadRequestResponse error) {
+            context.status(400);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
 
     }
@@ -49,13 +64,16 @@ public class GameHandler {
             var gson = new Gson();
             String token = context.header("authorization");
 
-            GameService.joinGame(token);
+            var game = gson.fromJson(context.body(), GameService.joinGameRequest.class);
+            gameService.joinGame(token, game);
             context.status(200);
             context.contentType("application/json");
             context.result(gson.toJson("{}"));
 
         } catch (UnauthorizedResponse error) {
-
+            context.status(401);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
     }
 }
