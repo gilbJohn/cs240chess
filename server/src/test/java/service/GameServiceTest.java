@@ -112,7 +112,7 @@ public class GameServiceTest {
 
         int gameID = service.createGame(auth.authToken(), request);
 
-        var joinRequest = new GameService.JoinGameRequest("WHITE", 0);
+        var joinRequest = new GameService.JoinGameRequest("WHITE", gameID);
 
         service.joinGame(auth.authToken(), joinRequest);
 
