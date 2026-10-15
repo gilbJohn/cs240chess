@@ -34,15 +34,15 @@ public class GameService {
             throw new BadRequestResponse("bad request");
         }
 
-        int ID = dataAccess.gameID++;
+        int gameID = dataAccess.gameID++;
 
-        dataAccess.createGame(new GameData(ID, null, null, game.gameName(), new ChessGame()));
-        return ID;
+        dataAccess.createGame(new GameData(gameID, null, null, game.gameName(), new ChessGame()));
+        return gameID;
     }
 
 
     // JOINING THE GAME THIS IS SO HARD TO READ
-    public void joinGame(String token, joinGameRequest request) {
+    public void joinGame(String token, JoinGameRequest request) {
         if(token == null || dataAccess.getAuth(token) == null) {
             throw new UnauthorizedResponse("unauthorized");
         }
@@ -53,8 +53,8 @@ public class GameService {
             throw new BadRequestResponse("bad request");
         }
 
-        int ID = request.gameID();
-        GameData game = dataAccess.getGame(ID);
+        int gameID = request.gameID();
+        GameData game = dataAccess.getGame(gameID);
         String color = request.playerColor;
         String username = dataAccess.getAuth(token).username();
 
@@ -63,23 +63,23 @@ public class GameService {
         }
 
         if(Objects.equals(color, "WHITE")) {
-            if(dataAccess.getGame(ID).whiteUsername() != null){
+            if(dataAccess.getGame(gameID).whiteUsername() != null){
                throw new ForbiddenResponse("Already Taken");
             }
-            GameData updatedGame = new GameData(ID, username, game.blackUsername(), game.gameName(), game.game());
+            GameData updatedGame = new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game());
             dataAccess.updateGame(updatedGame);
         }
 
         if (Objects.equals(color, "BLACK")) {
-            if(dataAccess.getGame(ID).blackUsername() != null){
+            if(dataAccess.getGame(gameID).blackUsername() != null){
                 throw new ForbiddenResponse("Already Taken");
             }
-            GameData updatedGame = new GameData(ID, game.whiteUsername(), username, game.gameName(), game.game());
+            GameData updatedGame = new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game());
             dataAccess.updateGame(updatedGame);
         }
 
     }
-    public record joinGameRequest (String playerColor, int gameID){
+    public record JoinGameRequest(String playerColor, int gameID){
 
     }
 }

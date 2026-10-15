@@ -6,7 +6,6 @@ import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.UnauthorizedResponse;
 import model.GameData;
-import model.UserData;
 import org.jetbrains.annotations.NotNull;
 import service.GameService;
 
@@ -65,7 +64,7 @@ public class GameHandler {
             var gson = new Gson();
             String token = context.header("authorization");
 
-            var game = gson.fromJson(context.body(), GameService.joinGameRequest.class);
+            var game = gson.fromJson(context.body(), GameService.JoinGameRequest.class);
             gameService.joinGame(token, game);
             context.status(200);
             context.contentType("application/json");

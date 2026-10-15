@@ -100,7 +100,7 @@ public class GameServiceTest {
         }
     @Test
     @DisplayName("Join Game Successfully")
-    public void JoinGame() throws DataAccessException {
+    public void joinGame() throws DataAccessException {
         var dataAccess = new MemoryDataAccess();
         var userService = new UserService(dataAccess);
         var user = new UserData("USER", "PASS", "EMAIL");
@@ -112,7 +112,7 @@ public class GameServiceTest {
 
         int gameID = service.createGame(auth.authToken(), request);
 
-        var joinRequest = new GameService.joinGameRequest("WHITE", 0);
+        var joinRequest = new GameService.JoinGameRequest("WHITE", 0);
 
         service.joinGame(auth.authToken(), joinRequest);
 
@@ -139,7 +139,7 @@ public class GameServiceTest {
                 123, "bob", null, "Test game", new ChessGame());
         dataAccess.createGame(game);
 
-        var request = new GameService.joinGameRequest("WHITE", 123);
+        var request = new GameService.JoinGameRequest("WHITE", 123);
 
         assertThrows(ForbiddenResponse.class, () -> service.joinGame(auth.authToken(), request));
 

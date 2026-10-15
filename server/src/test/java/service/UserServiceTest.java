@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserServiceTest {
-    private static final Logger log = LoggerFactory.getLogger(UserServiceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceTest.class);
 
     @Test
     @DisplayName("Adds User and Auth")
@@ -59,7 +59,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("SuccessFul Login")
-    public void SuccessFulLogin() throws UnauthorizedResponse {
+    public void successfulLogin() throws UnauthorizedResponse {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
@@ -76,7 +76,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Unauthorized Login")
-    public void UnauthorizedLogin() throws UnauthorizedResponse {
+    public void unauthorizedLogin() throws UnauthorizedResponse {
 
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
@@ -94,7 +94,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("SuccessFul Logout")
-    public void SuccessFulLogout() throws ForbiddenResponse {
+    public void successfulLogout() throws ForbiddenResponse {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
@@ -115,7 +115,7 @@ public class UserServiceTest {
     }
     @Test
     @DisplayName("Unauthorized Logout")
-    public void UnauthorizedLogout() throws ForbiddenResponse {
+    public void unauthorizedLogout() throws ForbiddenResponse {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
