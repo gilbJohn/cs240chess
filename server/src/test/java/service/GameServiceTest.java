@@ -3,6 +3,7 @@ package service;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.UnauthorizedResponse;
 import model.AuthData;
 import model.GameData;
@@ -97,6 +98,51 @@ public class GameServiceTest {
         assertThrows(UnauthorizedResponse.class, () -> service.createGame(auth.authToken(), request));
 
         }
+    @Test
+    @DisplayName("Join Game Successfully")
+    public void JoinGame() throws DataAccessException {
+        var dataAccess = new MemoryDataAccess();
+        var userService = new UserService(dataAccess);
+        var user = new UserData("USER", "PASS", "EMAIL");
+
+        var auth = userService.register(user);
+        var service = new GameService(dataAccess);
+
+        var request = new GameData(0, null, null, "TEST GAME", new ChessGame());
+
+        int gameID = service.createGame(auth.authToken(), request);
+
+        var joinRequest = new GameService.joinGameRequest("WHITE", 0);
+
+        service.joinGame(auth.authToken(), joinRequest);
 
 
+        var storedGame = dataAccess.getGame(gameID);
+
+        assertNotNull(storedGame);
+        assertEquals(gameID, storedGame.gameID());
+        assertEquals("TEST GAME", storedGame.gameName());
+        assertEquals("USER", storedGame.whiteUsername());
+        assertNull(storedGame.blackUsername());
     }
+
+    @Test
+    @DisplayName("Join Color is Taken")
+    public void colorTaken() throws DataAccessException {
+        var dataAccess = new MemoryDataAccess();
+        var service = new GameService(dataAccess);
+
+        var auth = new AuthData("test-token", "alice");
+        dataAccess.createAuth(auth);
+
+        var game = new GameData(
+                123, "bob", null, "Test game", new ChessGame());
+        dataAccess.createGame(game);
+
+        var request = new GameService.joinGameRequest("WHITE", 123);
+
+        assertThrows(ForbiddenResponse.class, () -> service.joinGame(auth.authToken(), request));
+
+        assertEquals(game, dataAccess.getGame(123));
+    }
+}
