@@ -34,6 +34,10 @@ public class UserService {
     }
 
     public AuthData login(UserData user) throws UnauthorizedResponse {
+        if (user == null || user.username() == null || user.password() == null) {
+            throw new BadRequestResponse("bad request");
+        }
+
         var username = user.username();
 
         var storedUser = dataAccess.getUser(username);
@@ -43,9 +47,6 @@ public class UserService {
             throw new UnauthorizedResponse("unauthorized");
         }
 
-        if (user.username() == null || user.password() == null || user.email() == null) {
-            throw new BadRequestResponse("Need to put in valid info");
-        }
 
         var auth = new AuthData(UUID.randomUUID().toString(), username);
 
