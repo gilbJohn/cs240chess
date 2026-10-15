@@ -13,7 +13,7 @@ public class MemoryDataAccess implements DataAccess{
     private final Map<String, UserData> users = new HashMap<>();
     private final Map<Integer, GameData> games = new HashMap<>();
     private final Map<String, AuthData> authTokens = new HashMap<>();
-    public int gameID = 0;
+    public int gameID = 1;
 
     @Override
     public void clear() {

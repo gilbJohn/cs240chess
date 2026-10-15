@@ -29,9 +29,7 @@ public class GameHandler {
             context.result(gson.toJson(Map.of("games", result)));
 
         } catch (UnauthorizedResponse error){
-            context.status(401);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 401, error);
         }
     }
 
@@ -48,13 +46,9 @@ public class GameHandler {
             context.result(gson.toJson(Map.of("gameID", result)));
 
         } catch (UnauthorizedResponse error) {
-            context.status(401);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 401, error);
         } catch (BadRequestResponse error) {
-            context.status(400);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 400, error);
         }
 
     }
@@ -71,19 +65,13 @@ public class GameHandler {
             context.result("{}");
 
         } catch (UnauthorizedResponse error) {
-            context.status(401);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 401, error);
         }
         catch (BadRequestResponse error) {
-            context.status(400);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 400, error);
         }
         catch (ForbiddenResponse error) {
-            context.status(403);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 403, error);
         }
     }
 }

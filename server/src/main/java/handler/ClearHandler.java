@@ -21,9 +21,7 @@ public class ClearHandler {
             ctx.result("{}");
         }
         catch (DataAccessException exception) {
-            ctx.status(500);
-            ctx.contentType("application/json");
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + exception.getMessage())));
+            ErrorResponse.send(ctx, 500, exception);
         }
     }
 }

@@ -29,14 +29,10 @@ public class UserHandler {
             ctx.result(gson.toJson(result));
         }
         catch (BadRequestResponse error) {
-            ctx.status(400);
-            ctx.contentType("application/json");
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(ctx, 400, error);
         }
         catch (ForbiddenResponse error) {
-            ctx.status(403);
-            ctx.contentType("application/json");
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(ctx, 403, error);
         }
 
     }
@@ -51,14 +47,10 @@ public class UserHandler {
             context.contentType("application/json");
             context.result(gson.toJson(result));
         } catch (UnauthorizedResponse error) {
-            context.status(401);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 401, error);
         }
         catch (BadRequestResponse error) {
-            context.status(400);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 400, error);
         }
     }
 
@@ -73,14 +65,10 @@ public class UserHandler {
             context.contentType("application/json");
             context.result("{}");
         } catch (UnauthorizedResponse error) {
-            context.status(401);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 401, error);
         }
         catch (BadRequestResponse error) {
-            context.status(400);
-            context.contentType("application/json");
-            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+            ErrorResponse.send(context, 400, error);
         }
     }
 }
