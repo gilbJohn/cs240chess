@@ -3,6 +3,7 @@ package handler;
 import com.google.gson.Gson;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.UnauthorizedResponse;
 import model.GameData;
 import model.UserData;
@@ -45,7 +46,7 @@ public class GameHandler {
             var result = gameService.createGame(token, game);
             context.status(200);
             context.contentType("application/json");
-            context.result(gson.toJson(Map.of("gamesID", result)));
+            context.result(gson.toJson(Map.of("gameID", result)));
 
         } catch (UnauthorizedResponse error) {
             context.status(401);
@@ -68,10 +69,20 @@ public class GameHandler {
             gameService.joinGame(token, game);
             context.status(200);
             context.contentType("application/json");
-            context.result(gson.toJson("{}"));
+            context.result("{}");
 
         } catch (UnauthorizedResponse error) {
             context.status(401);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        }
+        catch (BadRequestResponse error) {
+            context.status(400);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        }
+        catch (ForbiddenResponse error) {
+            context.status(403);
             context.contentType("application/json");
             context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }

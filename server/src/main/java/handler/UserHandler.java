@@ -51,7 +51,7 @@ public class UserHandler {
             context.contentType("application/json");
             context.result(gson.toJson(result));
         } catch (UnauthorizedResponse error) {
-            context.status(401);
+            context.status(400);
             context.contentType("application/json");
             context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
@@ -66,9 +66,14 @@ public class UserHandler {
 
             context.status(200);
             context.contentType("application/json");
-            context.result(gson.toJson("{}"));
+            context.result("{}");
         } catch (UnauthorizedResponse error) {
             context.status(401);
+            context.contentType("application/json");
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        }
+        catch (BadRequestResponse error) {
+            context.status(400);
             context.contentType("application/json");
             context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }

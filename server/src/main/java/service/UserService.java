@@ -42,6 +42,11 @@ public class UserService {
                 || !Objects.equals(user.password(), storedUser.password())) {
             throw new UnauthorizedResponse("unauthorized");
         }
+
+        if (user.username() == null || user.password() == null || user.email() == null) {
+            throw new BadRequestResponse("Need to put in valid info");
+        }
+
         var auth = new AuthData(UUID.randomUUID().toString(), username);
 
         dataAccess.createAuth(auth);
