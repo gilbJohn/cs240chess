@@ -22,38 +22,47 @@ public class MemoryDataAccess implements DataAccess{
         authTokens.clear();
     }
 
+    @Override
     public void createUser(UserData user) {
         users.put(user.username(), user);
     }
 
+    @Override
     public UserData getUser(String username) {
         return users.get(username);
     }
 
+    @Override
     public void createGame(GameData game){
         games.put(game.gameID(), game);
     }
 
+    @Override
     public Collection<GameData> listGames() {
         return new ArrayList<>(games.values());
     }
 
+    @Override
     public GameData getGame(int gameID) {
         return games.get(gameID);
     }
 
+    @Override
     public void updateGame(GameData game) {
         games.put(game.gameID(), game);
     }
 
+    @Override
     public void createAuth(AuthData auth) {
         authTokens.put(auth.authToken(), auth);
     }
 
+    @Override
     public AuthData getAuth(String auth) {
         return authTokens.get(auth);
     }
 
+    @Override
     public void deleteAuth(String token) {
         authTokens.remove(token);
     }
