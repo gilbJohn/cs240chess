@@ -137,6 +137,31 @@ public class SqlDataAccess implements DataAccess {
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
+        String sql = """
+                SELECT gameID, whiteUser, blackUser, gameName, game\s
+                FROM games\s
+                WHERE username = ?
+               \s""";
+        try(var connection = DatabaseManager.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, gameID);
+
+            try (var results = statement.executeQuery()){
+                if (results.next()) { // this line means if the user was found I guess.
+                    return new GameData(
+                            results.getInt("gameID"),
+                            results.getString("password"),
+                            results.getString("email"),
+                            results.getString("gameName"),
+                            //results.getText?("game");
+                    );
+                }
+
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
@@ -147,11 +172,43 @@ public class SqlDataAccess implements DataAccess {
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
+        String sql = """
+                INSERT INTO auth (token, username)
+                VALUES(?,?)
+                """;
+        try(var connection = DatabaseManager.getConnection();
+            var statement = connection.prepareStatement(sql)) {
 
+            statement.setString(1, auth.authToken());
+            statement.setString(2, auth.username());
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public AuthData getAuth(String auth) throws DataAccessException {
+        String sql = """
+                SELECT token, username
+                FROM auth\s
+                WHERE username = ?
+               \s""";
+        try(var connection = DatabaseManager.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, auth);
+
+            try (var results = statement.executeQuery()){
+                if (results.next()) { // this line means if the user was found I guess.
+                    return new AuthData(
+                            results.getString("token"),
+                            results.getString("username")
+                    );
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
