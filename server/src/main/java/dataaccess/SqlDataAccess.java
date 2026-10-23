@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -68,7 +70,7 @@ public class SqlDataAccess implements DataAccess {
     }
 
     @Override
-    public void createUser(UserData user) {
+    public void createUser(UserData user) throws DataAccessException {
         String sql = """
                 INSERT INTO users (username, password, email)
                 VALUES(?,?,?)
@@ -79,8 +81,10 @@ public class SqlDataAccess implements DataAccess {
             statement.setString(1, user.username());
             statement.setString(2, user.password());
             statement.setString(3, user.email());
+
+            statement.executeUpdate();
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("couldn't create user", e);
         }
     }
 
@@ -105,10 +109,9 @@ public class SqlDataAccess implements DataAccess {
                             results.getString("email")
                     );
                 }
-
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("couldn't get the user",e);
         }
         return null;
     }
@@ -117,16 +120,22 @@ public class SqlDataAccess implements DataAccess {
     public void createGame(GameData game) throws DataAccessException {
         String sql = """
                 INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game)
-                VALUES(?,null,null, ?, ?)
+                VALUES(?,?,?, ?, ?)
                 """;
+
+        String gameJson = new Gson().toJson(game.game());
         try(var connection = DatabaseManager.getConnection();
             var statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, game.gameID());
-            statement.setString(2, game.gameName());
-           // statement.set(3, game.game());
+            statement.setString(2, game.whiteUsername());
+            statement.setString(3, game.blackUsername());
+            statement.setString(4, game.gameName());
+            statement.setString(5, gameJson);
+
+            statement.executeUpdate();
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("couldn't create game", e);
         }
     }
 
@@ -138,9 +147,9 @@ public class SqlDataAccess implements DataAccess {
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
         String sql = """
-                SELECT gameID, whiteUser, blackUser, gameName, game\s
+                SELECT gameID, whiteUsername, blackUsername, gameName, game\s
                 FROM games\s
-                WHERE username = ?
+                WHERE gameID = ?
                \s""";
         try(var connection = DatabaseManager.getConnection();
             var statement = connection.prepareStatement(sql)) {
@@ -151,16 +160,16 @@ public class SqlDataAccess implements DataAccess {
                 if (results.next()) { // this line means if the user was found I guess.
                     return new GameData(
                             results.getInt("gameID"),
-                            results.getString("password"),
-                            results.getString("email"),
+                            results.getString("whiteUsername"),
+                            results.getString("blackUsername"),
                             results.getString("gameName"),
-                            //results.getText?("game");
+                            new Gson().fromJson(results.getString("game"), ChessGame.class)
                     );
                 }
 
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("couldn't do it :(", e);
         }
         return null;
     }
@@ -173,7 +182,7 @@ public class SqlDataAccess implements DataAccess {
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
         String sql = """
-                INSERT INTO auth (token, username)
+                INSERT INTO auth (authtoken, username)
                 VALUES(?,?)
                 """;
         try(var connection = DatabaseManager.getConnection();
@@ -181,17 +190,20 @@ public class SqlDataAccess implements DataAccess {
 
             statement.setString(1, auth.authToken());
             statement.setString(2, auth.username());
+
+            statement.executeUpdate();
+
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Couldn't create", e);
         }
     }
 
     @Override
     public AuthData getAuth(String auth) throws DataAccessException {
         String sql = """
-                SELECT token, username
+                SELECT authtoken, username
                 FROM auth\s
-                WHERE username = ?
+                WHERE authToken = ?
                \s""";
         try(var connection = DatabaseManager.getConnection();
             var statement = connection.prepareStatement(sql)) {
@@ -201,13 +213,13 @@ public class SqlDataAccess implements DataAccess {
             try (var results = statement.executeQuery()){
                 if (results.next()) { // this line means if the user was found I guess.
                     return new AuthData(
-                            results.getString("token"),
+                            results.getString("authToken"),
                             results.getString("username")
                     );
                 }
             }
         } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("failed to get auth token", e);
         }
         return null;
     }
