@@ -7,6 +7,7 @@ import model.GameData;
 import model.UserData;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -66,7 +67,23 @@ public class SqlDataAccess implements DataAccess {
 
     @Override
     public void clear() throws DataAccessException {
+        String usersSql = "DELETE FROM users"; // you have to do these in seperate lines smh :(
+        String gamesSql = "DELETE FROM games";
+        String authSql = "DELETE FROM auth";
 
+        try(var connection = DatabaseManager.getConnection();
+            var userStatement = connection.prepareStatement(usersSql);
+            var gameStatement = connection.prepareStatement(gamesSql);
+            var authStatement = connection.prepareStatement(authSql);
+            ) {
+
+            userStatement.executeUpdate();
+            gameStatement.executeUpdate();
+            authStatement.executeUpdate();
+
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Couldn't clear", e);
+        }
     }
 
     @Override
@@ -141,7 +158,30 @@ public class SqlDataAccess implements DataAccess {
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
-        return List.of();
+        String sql = """
+                SELECT gameID, whiteUsername, blackUsername, gameName, game\s
+                FROM games\s
+               \s""";
+        try(var connection = DatabaseManager.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+
+            try (var results = statement.executeQuery()){
+                Collection<GameData> games = new ArrayList<>();
+                while (results.next()) { // this line means if the user was found I guess.
+                    GameData gameRow = new GameData(
+                            results.getInt("gameID"),
+                            results.getString("whiteUsername"),
+                            results.getString("blackUsername"),
+                            results.getString("gameName"),
+                            new Gson().fromJson(results.getString("game"), ChessGame.class)
+                    );
+                    games.add(gameRow);
+                }
+                return games;
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("couldn't do it :(", e);
+        }
     }
 
     @Override
@@ -226,6 +266,18 @@ public class SqlDataAccess implements DataAccess {
 
     @Override
     public void deleteAuth(String token) throws DataAccessException {
+        String sql = """
+                DELETE FROM auth WHERE authToken = ?
+                """;
+        try(var connection = DatabaseManager.getConnection();
+            var statement = connection.prepareStatement(sql)) {
 
+            statement.setString(1, token);
+
+            statement.executeUpdate();
+
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Couldn't delete", e);
+        }
     }
 }
