@@ -46,5 +46,7 @@ public class clearTest {
         dataAccess.clear();
 
         assertDoesNotThrow(dataAccess::clear);
+
+        //should be done!
     }
 }
