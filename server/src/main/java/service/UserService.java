@@ -9,6 +9,7 @@ import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.UnauthorizedResponse;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -31,7 +32,12 @@ public class UserService {
         if (dataAccess.getUser(user.username()) != null) {
             throw new ForbiddenResponse("Username Already Taken");
         }
-        dataAccess.createUser(user);
+
+        String passwordHash = BCrypt.hashpw(user.password(), BCrypt.gensalt());
+
+        UserData storedUser = new UserData(user.username(), passwordHash, user.email());
+
+        dataAccess.createUser(storedUser);
         dataAccess.createAuth(auth);
         return auth;
     }
@@ -46,7 +52,7 @@ public class UserService {
         var storedUser = dataAccess.getUser(username);
 
         if (storedUser == null
-                || !Objects.equals(user.password(), storedUser.password())) {
+                || !BCrypt.checkpw(user.password(), storedUser.password())) {
             throw new UnauthorizedResponse("unauthorized");
         }
 
