@@ -17,9 +17,15 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
+        DataAccess dataAccess;
 
         //storage;
-        var dataAccess = new MemoryDataAccess();
+        try {
+            dataAccess = new SqlDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Could not initialize database", e);
+        }
+
 
         // clear logic
         var clearService = new ClearService(dataAccess);
