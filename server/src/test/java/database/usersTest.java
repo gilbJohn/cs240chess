@@ -9,18 +9,17 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class usersTest {
     @Test
-    void createUser() throws DataAccessException {
+    void createUserAndGetUser() throws DataAccessException {
         var dataAccess = new SqlDataAccess();
 
-        String passwordHash = BCrypt.hashpw("test-password", BCrypt.gensalt());
 
         var expected = new UserData(
                 UUID.randomUUID().toString(),
-                passwordHash,
+                "test-password",
                 "test@email.com"
         );
 
@@ -30,5 +29,25 @@ public class usersTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void createUserTwice() throws DataAccessException {
+        var dataAccess = new SqlDataAccess();
+
+        var expected = new UserData(
+                UUID.randomUUID().toString(),
+                "test-password",
+                "test@email.com"
+        );
+
+        dataAccess.createUser(expected);
+
+        assertThrows(DataAccessException.class, () -> dataAccess.createUser(expected));
+    }
+
+    @Test
+    void getUserNotExist() throws DataAccessException {
+        var dataAccess = new SqlDataAccess();
+        assertNull(dataAccess.getUser(UUID.randomUUID().toString()));
+    }
 
 }

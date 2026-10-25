@@ -44,7 +44,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Username Taken")
-    public void userNameTaken() throws ForbiddenResponse {
+    public void userNameTaken() throws ForbiddenResponse, DataAccessException {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
@@ -59,7 +59,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("SuccessFul Login")
-    public void successfulLogin() throws UnauthorizedResponse {
+    public void successfulLogin() throws UnauthorizedResponse, DataAccessException {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
@@ -76,7 +76,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Unauthorized Login")
-    public void unauthorizedLogin() throws UnauthorizedResponse {
+    public void unauthorizedLogin() throws UnauthorizedResponse, DataAccessException {
 
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
@@ -94,7 +94,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("SuccessFul Logout")
-    public void successfulLogout() throws ForbiddenResponse {
+    public void successfulLogout() throws ForbiddenResponse, DataAccessException {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
@@ -115,7 +115,7 @@ public class UserServiceTest {
     }
     @Test
     @DisplayName("Unauthorized Logout")
-    public void unauthorizedLogout() throws ForbiddenResponse {
+    public void unauthorizedLogout() throws ForbiddenResponse, DataAccessException {
         var dataAccess = new MemoryDataAccess();
         var service = new UserService(dataAccess);
 
