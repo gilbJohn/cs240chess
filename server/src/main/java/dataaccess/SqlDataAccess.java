@@ -216,6 +216,27 @@ public class SqlDataAccess implements DataAccess {
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
+        String sql = """
+                UPDATE games
+                SET whiteUsername = ?,
+                   blackUserName = ?,
+                   gameName = ?,
+                   game = ?
+                WHERE gameID = ?
+               \s""";
+        try(var connection = DatabaseManager.getConnection();
+            var statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, game.whiteUsername());
+            statement.setString(2, game.blackUsername());
+            statement.setString(3, game.gameName());
+            statement.setString(4, new Gson().toJson(game.game()));
+            statement.setInt(5, game.gameID());
+            statement.executeUpdate();
+
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("couldn't do it :(", e);
+        }
 
     }
 
