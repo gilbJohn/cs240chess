@@ -11,6 +11,7 @@ import model.GameData;
 import model.UserData;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -139,25 +140,32 @@ public class SqlDataAccess implements DataAccess {
     @Override
     public int createGame(GameData game) throws DataAccessException {
         String sql = """
-                INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game)
-                VALUES(?,?,?, ?, ?)
+                INSERT INTO games (whiteUsername, blackUsername, gameName, game)
+                VALUES(?,?,?,?)
                 """;
 
         String gameJson = new Gson().toJson(game.game());
         try(var connection = DatabaseManager.getConnection();
-            var statement = connection.prepareStatement(sql)) {
+            var statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setInt(1, game.gameID());
-            statement.setString(2, game.whiteUsername());
-            statement.setString(3, game.blackUsername());
-            statement.setString(4, game.gameName());
-            statement.setString(5, gameJson);
+            statement.setString(1, game.whiteUsername());
+            statement.setString(2, game.blackUsername());
+            statement.setString(3, game.gameName());
+            statement.setString(4, gameJson);
 
             statement.executeUpdate();
+
+
+            try (var keys = statement.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return keys.getInt(1);
+                }
+            }
+            throw new DataAccessException("No game ID was generated");
+
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException("couldn't create game", e);
         }
-        return game.gameID();
     }
 
     @Override
