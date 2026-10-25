@@ -33,6 +33,8 @@ public class UserHandler {
         }
         catch (ForbiddenResponse error) {
             ErrorResponse.send(ctx, 403, error);
+        } catch (DataAccessException e) {
+            ErrorResponse.send(ctx, 500, e);
         }
 
     }
@@ -51,6 +53,8 @@ public class UserHandler {
         }
         catch (BadRequestResponse error) {
             ErrorResponse.send(context, 400, error);
+        } catch (DataAccessException e) {
+            ErrorResponse.send(context, 500, e);
         }
     }
 
@@ -69,6 +73,8 @@ public class UserHandler {
         }
         catch (BadRequestResponse error) {
             ErrorResponse.send(context, 400, error);
+        } catch (DataAccessException e) {
+            ErrorResponse.send(context, 500, e);
         }
     }
 }

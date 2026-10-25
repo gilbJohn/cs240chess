@@ -9,7 +9,6 @@ import model.UserData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class SqlDataAccess implements DataAccess {
 
@@ -134,7 +133,7 @@ public class SqlDataAccess implements DataAccess {
     }
 
     @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public int createGame(GameData game) throws DataAccessException {
         String sql = """
                 INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game)
                 VALUES(?,?,?, ?, ?)
@@ -154,6 +153,7 @@ public class SqlDataAccess implements DataAccess {
         } catch (SQLException | DataAccessException e) {
             throw new DataAccessException("couldn't create game", e);
         }
+        return game.gameID();
     }
 
     @Override

@@ -1,5 +1,8 @@
 package service;
 
+import dataaccess.DataAccess;
+
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ForbiddenResponse;
@@ -11,14 +14,14 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
-    private final MemoryDataAccess dataAccess;
+    private final DataAccess dataAccess;
 
-    public UserService(MemoryDataAccess dataAccess) {
+    public UserService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 
 
-    public AuthData register(UserData user) throws BadRequestResponse {
+    public AuthData register(UserData user) throws BadRequestResponse, DataAccessException {
         String token = UUID.randomUUID().toString();
         AuthData auth = new AuthData(token, user.username());
         if (user.username() == null || user.password() == null || user.email() == null) {
@@ -33,7 +36,7 @@ public class UserService {
         return auth;
     }
 
-    public AuthData login(UserData user) throws UnauthorizedResponse {
+    public AuthData login(UserData user) throws UnauthorizedResponse, DataAccessException {
         if (user == null || user.username() == null || user.password() == null) {
             throw new BadRequestResponse("bad request");
         }
@@ -55,7 +58,7 @@ public class UserService {
     }
 
 
-    public void logOut(String token) {
+    public void logOut(String token) throws DataAccessException {
         if(token == null || dataAccess.getAuth(token) == null) {
             throw new UnauthorizedResponse("unauthorized");
         }

@@ -1,6 +1,8 @@
 package service;
 
 import chess.ChessGame;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ForbiddenResponse;
@@ -12,12 +14,12 @@ import java.util.Objects;
 
 public class GameService {
 
-    private final MemoryDataAccess dataAccess;
+    private final DataAccess dataAccess;
     public GameService(MemoryDataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 
-    public Collection<GameData> listGames(String token) {
+    public Collection<GameData> listGames(String token) throws DataAccessException {
         if(token == null || dataAccess.getAuth(token) == null) {
             throw new UnauthorizedResponse("unauthorized");
         }
@@ -26,7 +28,7 @@ public class GameService {
 //
     //
     // CREATING The GAME
-    public int createGame(String token, GameData game) {
+    public int createGame(String token, GameData game) throws DataAccessException {
         if(token == null || dataAccess.getAuth(token) == null) {
             throw new UnauthorizedResponse("unauthorized");
         }
@@ -34,15 +36,14 @@ public class GameService {
             throw new BadRequestResponse("bad request");
         }
 
-        int gameID = dataAccess.gameID++;
 
-        dataAccess.createGame(new GameData(gameID, null, null, game.gameName(), new ChessGame()));
+        int gameID = dataAccess.createGame(new GameData(0, null, null, game.gameName(), new ChessGame()));
         return gameID;
     }
 
 
     // JOINING THE GAME THIS IS SO HARD TO READ
-    public void joinGame(String token, JoinGameRequest request) {
+    public void joinGame(String token, JoinGameRequest request) throws DataAccessException {
         if(token == null || dataAccess.getAuth(token) == null) {
             throw new UnauthorizedResponse("unauthorized");
         }

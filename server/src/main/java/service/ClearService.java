@@ -8,7 +8,7 @@ public class ClearService {
     private final DataAccess dataAccess;
 
 
-    public ClearService(MemoryDataAccess dataAccess) {
+    public ClearService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 

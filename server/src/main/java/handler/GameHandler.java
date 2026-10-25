@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
@@ -30,6 +31,8 @@ public class GameHandler {
 
         } catch (UnauthorizedResponse error){
             ErrorResponse.send(context, 401, error);
+        } catch (DataAccessException e) {
+            ErrorResponse.send(context, 500, e);
         }
     }
 
@@ -49,6 +52,8 @@ public class GameHandler {
             ErrorResponse.send(context, 401, error);
         } catch (BadRequestResponse error) {
             ErrorResponse.send(context, 400, error);
+        } catch (DataAccessException e) {
+            ErrorResponse.send(context, 500, e);
         }
 
     }
@@ -72,6 +77,8 @@ public class GameHandler {
         }
         catch (ForbiddenResponse error) {
             ErrorResponse.send(context, 403, error);
+        } catch (DataAccessException e) {
+            ErrorResponse.send(context, 500, e);
         }
     }
 }
