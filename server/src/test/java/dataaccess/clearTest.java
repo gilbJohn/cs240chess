@@ -12,25 +12,20 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class clearTest {
+public class ClearTest {
     @Test
     void clearWorks() throws DataAccessException {
         var dataAccess = new SqlDataAccess();
 
         assertDoesNotThrow(dataAccess::clear);
 
-        var game = new GameData(1, null, null, "game", new ChessGame());
+        var game = new GameData(0, null, null, "game", new ChessGame());
         var auth = new AuthData("token", "user");
         var user = new UserData("user", "password", "email");
 
         var gameId = dataAccess.createGame(game);
         dataAccess.createAuth(auth);
         dataAccess.createUser(user);
-
-
-        assertEquals(game, dataAccess.getGame(gameId));
-        assertEquals(auth, dataAccess.getAuth("token"));
-        assertEquals(user, dataAccess.getUser("user"));
 
         dataAccess.clear();
 

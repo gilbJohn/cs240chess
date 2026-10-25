@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class usersTest {
+public class UsersTest {
 
     @BeforeEach
     void setUp() throws DataAccessException {

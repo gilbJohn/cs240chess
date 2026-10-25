@@ -13,7 +13,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class gamesDataTest {
+public class GamesDataTest {
 
     @BeforeEach
     void setUp() throws DataAccessException {
@@ -93,11 +93,11 @@ public class gamesDataTest {
         var testGame = new GameData(0, "", "", "testGame", new ChessGame());
 
         var gameID = dataAccess.createGame(testGame);
-        var upDatedGame = new GameData(gameID, "white", "black", "newName", new ChessGame());
+        var updatedGame = new GameData(gameID, "white", "black", "newName", new ChessGame());
 
-        dataAccess.updateGame(upDatedGame);
+        dataAccess.updateGame(updatedGame);
 
-        assertEquals(upDatedGame, dataAccess.getGame(gameID));
+        assertEquals(updatedGame, dataAccess.getGame(gameID));
     }
 
     @Test
@@ -107,9 +107,9 @@ public class gamesDataTest {
 
         var gameID = dataAccess.createGame(testGame);
 
-        var upDatedGame = new GameData(gameID, "white", "black", null, new ChessGame());
+        var updatedGame = new GameData(gameID, "white", "black", null, new ChessGame());
 
 
-        assertThrows(DataAccessException.class, () -> dataAccess.updateGame(upDatedGame));
+        assertThrows(DataAccessException.class, () -> dataAccess.updateGame(updatedGame));
     }
 }
