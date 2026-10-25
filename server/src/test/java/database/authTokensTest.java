@@ -4,6 +4,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.SqlDataAccess;
 import model.AuthData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -11,6 +12,11 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class authTokensTest {
+
+    @BeforeEach
+    void setUp() throws DataAccessException {
+        new SqlDataAccess().clear();
+    }
 
     @Test
     void createAndGetAuth() throws DataAccessException {

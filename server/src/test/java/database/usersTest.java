@@ -4,6 +4,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.SqlDataAccess;
 import model.UserData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -12,6 +13,12 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class usersTest {
+
+    @BeforeEach
+    void setUp() throws DataAccessException {
+        new SqlDataAccess().clear();
+    }
+
     @Test
     void createUserAndGetUser() throws DataAccessException {
         var dataAccess = new SqlDataAccess();
