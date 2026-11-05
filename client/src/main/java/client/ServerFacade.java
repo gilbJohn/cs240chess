@@ -1,6 +1,7 @@
 package client;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import model.GameData;
 
 import java.io.IOException;
@@ -8,10 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class ServerFacade {
     private final String serverURL;
@@ -71,7 +69,7 @@ public class ServerFacade {
     public Collection<GameData> listGames(String authToken) throws IOException, InterruptedException{
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(serverURL + "/session"))
+                .uri(URI.create(serverURL + "/game"))
                 .header("authorization", authToken)
                 .GET()
                 .build();
@@ -80,6 +78,15 @@ public class ServerFacade {
                 .newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response;
+        if (response.statusCode() != 200) {
+            throw new IOException("Unable to List Games");
+        }
+        Gson gson = new Gson();
+
+        JsonObject body = gson.fromJson(response.body(), JsonObject.class);
+
+        GameData[] games = gson.fromJson(body.get("games"), GameData[].class);
+
+        return Arrays.asList(games);
     }
 }
