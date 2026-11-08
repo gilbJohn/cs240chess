@@ -79,20 +79,46 @@ public class ServerFacadeTests {
 
     @Test
     void createGameReturnsIdAndGameAppearsInList() throws Exception {
+        serverFacade.register("user", "password", "email");
+        String auth = serverFacade.login("user", "password");
+
+        int id = serverFacade.createGame("Test", auth);
+
+        assertTrue(serverFacade.listGames(auth).stream().anyMatch(game -> game.gameID() == id));
+    }
+
+    @Test
+    void createGameRejectsInvalidAuthToken() throws Exception {
+       assertThrows(IOException.class, () -> serverFacade.createGame("LMAO", "LMAO"));
+    }
+
+    @Test
+    void listGamesReturnsCreatedGames() throws Exception {
+        serverFacade.register("user", "password", "email");
+        String auth = serverFacade.login("user", "password");
+
+        int id1 = serverFacade.createGame("Test", auth);
+        int id2 = serverFacade.createGame("Test", auth);
+
+        assertTrue(serverFacade.listGames(auth).stream().anyMatch(game -> game.gameID() == id1 || game.gameID() == id2));
 
     }
 
     @Test
-    void createGameRejectsInvalidAuthToken() throws Exception {}
+    void listGamesRejectsInvalidAuthToken() throws Exception {
+        assertThrows(IOException.class, () -> serverFacade.listGames( "LMAO"));
+    }
 
     @Test
-    void listGamesReturnsCreatedGames() throws Exception {}
+    void joinGameAssignsPlayerToRequestedColor() throws Exception {
+        serverFacade.register("user", "password", "email");
+        String auth = serverFacade.login("user", "password");
 
-    @Test
-    void listGamesRejectsInvalidAuthToken() throws Exception {}
+        int id = serverFacade.createGame("Test", auth);
 
-    @Test
-    void joinGameAssignsPlayerToRequestedColor() throws Exception {}
+        assertDoesNotThrow(()->serverFacade.joinGame("WHITE", id, auth));
+
+    }
 
     @Test
     void joinGameRejectsAlreadyTakenColor() throws Exception {}
