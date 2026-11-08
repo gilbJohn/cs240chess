@@ -18,13 +18,17 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(8080);
         serverFacade = new ServerFacade(port);
-        serverFacade.clear();
         System.out.println("Started test HTTP server on " + port);
     }
 
     @AfterAll
     static void stopServer() {
         server.stop();
+    }
+
+    @BeforeEach
+    void clearData() throws IOException, InterruptedException {
+        serverFacade.clear();
     }
 
 
