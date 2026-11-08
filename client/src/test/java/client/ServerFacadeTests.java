@@ -118,11 +118,24 @@ public class ServerFacadeTests {
 
         assertDoesNotThrow(()->serverFacade.joinGame("WHITE", id, auth));
 
+        assertTrue(serverFacade.listGames(auth).stream()
+                .anyMatch(game -> game.gameID() == id
+                        && "user".equals(game.whiteUsername())));
     }
 
     @Test
-    void joinGameRejectsAlreadyTakenColor() throws Exception {}
+    void joinGameRejectsAlreadyTakenColor() throws Exception {
+        serverFacade.register("user", "password", "email");
+        String auth = serverFacade.login("user", "password");
+
+        int id = serverFacade.createGame("Test", auth);
+
+        assertDoesNotThrow(()->serverFacade.joinGame("WHITE", id, auth));
+        assertThrows(IOException.class, ()->serverFacade.joinGame("WHITE", id, auth));
+    }
 
     @Test
-    void clearRemovesUsersAuthTokensAndGames() throws Exception {}
+    void clearRemovesUsersAuthTokensAndGames() throws Exception {
+        serverFacade.clear();
+    }
 }
