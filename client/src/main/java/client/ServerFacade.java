@@ -106,7 +106,7 @@ public class ServerFacade {
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            throw new IOException("to create Game");
+            throw new IOException("Failed to create Game");
         }
         Gson gson = new Gson();
 
@@ -118,7 +118,7 @@ public class ServerFacade {
 
     public void joinGame(String playerColor, int gameID, String authToken)  throws IOException, InterruptedException {
         String json = new Gson().toJson(Map.of(
-                "gameName", playerColor,
+                "playerColor", playerColor,
                 "gameID", gameID
         ));
 
@@ -133,15 +133,22 @@ public class ServerFacade {
                 .send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            throw new IOException("to create Game");
+            throw new IOException("Unable to join game (HTTP " + response.statusCode() + ")");
         }
-        Gson gson = new Gson();
-
-        JsonObject body = gson.fromJson(response.body(), JsonObject.class);
     }
 
-    public void clearGame()  throws IOException, InterruptedException {
+    public void clear()  throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(serverURL + "/db"))
+                .DELETE()
+                .build();
 
+        HttpResponse<String> response = HttpClient
+                .newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Unable to Clear Data (HTTP " + response.statusCode() + ")");
+        }
     }
-
 }
