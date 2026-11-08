@@ -26,4 +26,42 @@ public class ServerFacadeTests {
         Assertions.assertTrue(true);
     }
 
+    @Test
+    void registerReturnsAuthToken() throws Exception {}
+
+    @Test
+    void registerRejectsDuplicateUsername() throws Exception {}
+
+    @Test
+    void loginReturnsAuthToken() throws Exception {}
+
+    @Test
+    void loginRejectsWrongPassword() throws Exception {}
+
+    @Test
+    void logoutInvalidatesAuthToken() throws Exception {}
+
+    @Test
+    void logoutRejectsInvalidAuthToken() throws Exception {}
+
+    @Test
+    void createGameReturnsIdAndGameAppearsInList() throws Exception {}
+
+    @Test
+    void createGameRejectsInvalidAuthToken() throws Exception {}
+
+    @Test
+    void listGamesReturnsCreatedGames() throws Exception {}
+
+    @Test
+    void listGamesRejectsInvalidAuthToken() throws Exception {}
+
+    @Test
+    void joinGameAssignsPlayerToRequestedColor() throws Exception {}
+
+    @Test
+    void joinGameRejectsAlreadyTakenColor() throws Exception {}
+
+    @Test
+    void clearRemovesUsersAuthTokensAndGames() throws Exception {}
 }
