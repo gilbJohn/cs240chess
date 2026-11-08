@@ -3,6 +3,8 @@ package client;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class ServerFacadeTests {
 
@@ -25,15 +27,27 @@ public class ServerFacadeTests {
     public void sampleTest() {
         Assertions.assertTrue(true);
     }
+    // Leave it INNNN!!!
 
     @Test
-    void registerReturnsAuthToken() throws Exception {}
+    void registerReturnsAuthToken() throws Exception {
+        ServerFacade serverFacade = new ServerFacade(8080);
+
+        String authToken = serverFacade.register("user", "password", "email");
+
+        assertNotNull(authToken);
+    }
 
     @Test
-    void registerRejectsDuplicateUsername() throws Exception {}
+    void registerRejectsDuplicateUsername() throws Exception {
+        ServerFacade serverFacade = new ServerFacade(8080);
+
+    }
 
     @Test
-    void loginReturnsAuthToken() throws Exception {}
+    void loginReturnsAuthToken() throws Exception {
+
+    }
 
     @Test
     void loginRejectsWrongPassword() throws Exception {}
