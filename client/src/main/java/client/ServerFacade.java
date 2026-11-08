@@ -18,7 +18,7 @@ public class ServerFacade {
         this.serverURL = "http://localhost:" + port;
     }
 
-    public void login(String username, String password) throws IOException, InterruptedException {
+    public String login(String username, String password) throws IOException, InterruptedException {
         String json = new Gson().toJson(Map.of(
                 "username", username,
                 "password", password
@@ -33,9 +33,20 @@ public class ServerFacade {
         HttpResponse<String> response = HttpClient
                 .newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Unable to Login");
+        }
+
+        Gson gson = new Gson();
+
+        JsonObject body = gson.fromJson(response.body(), JsonObject.class);
+
+        return body.get("authToken").getAsString();
+
     }
 
-    public void register(String username, String password, String email) throws IOException, InterruptedException {
+    public String register(String username, String password, String email) throws IOException, InterruptedException {
         String json = new Gson().toJson(Map.of(
                 "username", username,
                 "password", password,
@@ -51,6 +62,16 @@ public class ServerFacade {
         HttpResponse<String> response = HttpClient
                 .newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Unable to register");
+        }
+
+        Gson gson = new Gson();
+
+        JsonObject body = gson.fromJson(response.body(), JsonObject.class);
+
+        return body.get("authToken").getAsString();
     }
 
     public void logout(String authToken) throws IOException, InterruptedException{
@@ -64,6 +85,10 @@ public class ServerFacade {
         HttpResponse<String> response = HttpClient
                 .newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Unable to logout");
+        }
     }
 
     public Collection<GameData> listGames(String authToken) throws IOException, InterruptedException{
@@ -125,7 +150,7 @@ public class ServerFacade {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(serverURL+ "/game"))
                 .header("authorization", authToken)
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = HttpClient
