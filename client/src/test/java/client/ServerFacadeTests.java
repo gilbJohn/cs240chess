@@ -9,11 +9,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServerFacadeTests {
 
     private static Server server;
+    private static ServerFacade serverFacade;
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(8080);
+        serverFacade = new ServerFacade(port);
+
         System.out.println("Started test HTTP server on " + port);
     }
 
@@ -31,7 +34,6 @@ public class ServerFacadeTests {
 
     @Test
     void registerReturnsAuthToken() throws Exception {
-        ServerFacade serverFacade = new ServerFacade(8080);
 
         String authToken = serverFacade.register("user", "password", "email");
 
@@ -40,7 +42,7 @@ public class ServerFacadeTests {
 
     @Test
     void registerRejectsDuplicateUsername() throws Exception {
-        ServerFacade serverFacade = new ServerFacade(8080);
+
 
     }
 
