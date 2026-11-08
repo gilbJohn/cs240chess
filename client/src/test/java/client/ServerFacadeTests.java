@@ -63,14 +63,24 @@ public class ServerFacadeTests {
 
     @Test
     void logoutInvalidatesAuthToken() throws Exception {
+        serverFacade.register("user", "password", "email");
+        String auth = serverFacade.login("user", "password");
 
+        serverFacade.listGames(auth);
+        serverFacade.logout(auth);
+
+        assertThrows(IOException.class, () -> serverFacade.listGames(auth));
     }
 
     @Test
-    void logoutRejectsInvalidAuthToken() throws Exception {}
+    void logoutRejectsInvalidAuthToken() throws Exception {
+        assertThrows(IOException.class, () -> serverFacade.listGames("LMAO"));
+    }
 
     @Test
-    void createGameReturnsIdAndGameAppearsInList() throws Exception {}
+    void createGameReturnsIdAndGameAppearsInList() throws Exception {
+
+    }
 
     @Test
     void createGameRejectsInvalidAuthToken() throws Exception {}
