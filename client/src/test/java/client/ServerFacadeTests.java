@@ -3,6 +3,8 @@ package client;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -12,11 +14,11 @@ public class ServerFacadeTests {
     private static ServerFacade serverFacade;
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws IOException, InterruptedException {
         server = new Server();
         var port = server.run(8080);
         serverFacade = new ServerFacade(port);
-
+        serverFacade.clear();
         System.out.println("Started test HTTP server on " + port);
     }
 
@@ -42,20 +44,27 @@ public class ServerFacadeTests {
 
     @Test
     void registerRejectsDuplicateUsername() throws Exception {
-
-
+        serverFacade.register("user", "password", "email");
+        assertThrows(IOException.class, () -> serverFacade.register("user", "password", "email"));
     }
 
     @Test
     void loginReturnsAuthToken() throws Exception {
+        serverFacade.register("user", "password", "email");
+        String authToken = serverFacade.login("user", "password");
 
+        assertNotNull(authToken);
     }
 
     @Test
-    void loginRejectsWrongPassword() throws Exception {}
+    void loginRejectsWrongPassword() throws Exception {
+        assertThrows(IOException.class, () ->serverFacade.login("user", "password"));
+    }
 
     @Test
-    void logoutInvalidatesAuthToken() throws Exception {}
+    void logoutInvalidatesAuthToken() throws Exception {
+
+    }
 
     @Test
     void logoutRejectsInvalidAuthToken() throws Exception {}
