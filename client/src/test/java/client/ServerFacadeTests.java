@@ -136,6 +136,15 @@ public class ServerFacadeTests {
 
     @Test
     void clearRemovesUsersAuthTokensAndGames() throws Exception {
+        String oldAuth = serverFacade.register("user", "password", "email");
+        serverFacade.createGame("Test", oldAuth);
+
         serverFacade.clear();
+
+        assertThrows(IOException.class, () -> serverFacade.listGames(oldAuth));
+        assertThrows(IOException.class, () -> serverFacade.login("user", "password"));
+
+        String newAuth = serverFacade.register("user", "password", "email");
+        assertTrue(serverFacade.listGames(newAuth).isEmpty());
     }
 }
