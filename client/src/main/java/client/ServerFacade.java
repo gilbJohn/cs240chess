@@ -89,4 +89,59 @@ public class ServerFacade {
 
         return Arrays.asList(games);
     }
+
+    public int createGame(String gameName, String authToken) throws IOException, InterruptedException {
+        String json = new Gson().toJson(Map.of(
+                "gameName", gameName
+        ));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(serverURL+ "/game"))
+                .header("authorization", authToken)
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = HttpClient
+                .newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("to create Game");
+        }
+        Gson gson = new Gson();
+
+        JsonObject body = gson.fromJson(response.body(), JsonObject.class);
+
+        return body.get("gameID").getAsInt();
+
+    }
+
+    public void joinGame(String playerColor, int gameID, String authToken)  throws IOException, InterruptedException {
+        String json = new Gson().toJson(Map.of(
+                "gameName", playerColor,
+                "gameID", gameID
+        ));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(serverURL+ "/game"))
+                .header("authorization", authToken)
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = HttpClient
+                .newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("to create Game");
+        }
+        Gson gson = new Gson();
+
+        JsonObject body = gson.fromJson(response.body(), JsonObject.class);
+    }
+
+    public void clearGame()  throws IOException, InterruptedException {
+
+    }
+
 }
