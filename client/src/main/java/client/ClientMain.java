@@ -11,8 +11,8 @@ public class ClientMain {
 
         ServerFacade facade = new ServerFacade(8080);
         LoggedOutClient loggedOut = new LoggedOutClient(facade);
-        LoggedInClient loggedIn = new LoggedInClient();
-        PlayingClient playing = new PlayingClient();
+        LoggedInClient loggedIn = new LoggedInClient(facade);
+        PlayingClient playing = new PlayingClient(facade);
 
         String authToken = null;
 
