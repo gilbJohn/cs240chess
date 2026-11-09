@@ -40,10 +40,10 @@ public class ClientMain {
                         loggedOut.printHelp();
                     }
                     if ("register".equals(command)) {
-                        loggedOut.register(parts);
+                        authToken = loggedOut.register(parts);
                     }
                     if ("login".equals(command)) {
-                        loggedOut.login(parts);
+                        authToken = loggedOut.login(parts);
                     }
 
                 } else {
