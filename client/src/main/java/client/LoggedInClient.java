@@ -1,9 +1,12 @@
 package client;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LoggedInClient {
-    private ServerFacade facade;
+    private final ServerFacade facade;
 
     public LoggedInClient(ServerFacade facade) {
         this.facade = facade;
@@ -27,17 +30,41 @@ public class LoggedInClient {
     }
 
     public void createGame(String[] parts, String authToken) throws IOException, InterruptedException {
+        if(parts.length < 2) {
+            System.out.print("Usage: create <GAME_NAME>");
+            return;
+        }
+
         try  {
-            System.out.print("GAME ID: " + facade.createGame(parts[1], authToken));
+            String name = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length));
+            System.out.print("GAME ID: " + facade.createGame(parts[1], authToken
+                               + "\n Created " + name + ". Type list to see available games"
+            ));
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    // I need to define this here I guess
+    private final List<Integer> gameIds = new ArrayList<>();
 
     public void listGames(String authToken) throws IOException, InterruptedException {
         try {
-            System.out.print(facade.listGames(authToken));
+
+            var games = facade.listGames(authToken);
+            gameIds.clear();
+
+            for(var game: games) {
+                gameIds.add(game.gameID());
+
+                String white = game.whiteUsername() == null ? "Open" : game.whiteUsername();
+                String black = game.blackUsername() == null ? "Open" : game.blackUsername();
+
+                System.out.printf("TOTAL GAMES: %d. NAME: %s (ID: %d) | White: %s | Black: %s%n",
+                        gameIds.size(), game.gameName(), game.gameID(), game.whiteUsername(), game.blackUsername()
+                );
+            }
+
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

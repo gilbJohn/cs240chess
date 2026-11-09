@@ -47,28 +47,14 @@ public class ClientMain {
                     }
 
                 } else {
-                    if (Objects.equals(command, "help")) {
-                        loggedIn.printHelp();
-                    }
-                    if ("logout".equals(command)){
-                        authToken = loggedIn.logout(authToken);
-                    }
-                    if ("create".equals(command)) {
-                        loggedIn.createGame(parts, authToken);
-                    }
-                    if ("list".equals(command)) {
-                        loggedIn.listGames(authToken);
-                    }
-                    if ("join".equals(command)) {
-                        loggedIn.joinGame(parts, authToken);
-                    }
-                    if("quit".equals(command)) {
-                        break;
-                    }
-                    if("observe".equals(command)) {
-                        loggedIn.observe(parts);
-                    } else {
-                        System.out.print("please input a valid command");
+                    switch (command) {
+                        case "help" -> loggedIn.printHelp();
+                        case "logout" -> authToken = loggedIn.logout(authToken);
+                        case "create" -> loggedIn.createGame(parts, authToken);
+                        case "list" -> loggedIn.listGames(authToken);
+                        case "join" -> loggedIn.joinGame(parts, authToken);
+                        case "observe" -> loggedIn.observe(parts);
+                        default -> System.out.println("Please enter a valid command.");
                     }
                 }
             }
