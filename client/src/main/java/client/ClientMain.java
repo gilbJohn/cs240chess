@@ -32,10 +32,10 @@ public class ClientMain {
                 String[] parts = input.split("\\s+");
                 String command = parts[0];
 
+                if ("quit".equals(command)) {
+                    break;
+                }
                 if (authToken == null) {
-                    if ("quit".equals(command)) {
-                        break;
-                    }
                     if (Objects.equals(command, "help")) {
                         loggedOut.printHelp();
                     }
@@ -47,7 +47,27 @@ public class ClientMain {
                     }
 
                 } else {
-
+                    if (Objects.equals(command, "help")) {
+                        loggedIn.printHelp();
+                    }
+                    if ("logout".equals(command)){
+                        loggedIn.logout();
+                    }
+                    if ("create".equals(command)) {
+                        loggedIn.createGame();
+                    }
+                    if ("list".equals(command)) {
+                        loggedIn.listGames();
+                    }
+                    if ("join".equals(command)) {
+                        loggedIn.joinGame();
+                    }
+                    if("quit".equals(command)) {
+                        loggedIn.quit();
+                    }
+                    if("observe".equals(command)) {
+                        loggedIn.observe();
+                    }
                 }
             }
         }
