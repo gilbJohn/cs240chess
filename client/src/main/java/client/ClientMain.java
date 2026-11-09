@@ -3,26 +3,48 @@ package client;
 import chess.*;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientMain {
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
         ServerFacade facade = new ServerFacade(8080);
+        LoggedOutClient loggedOut = new LoggedOutClient();
+        LoggedInClient loggedIn = new LoggedInClient();
+        PlayingClient playing = new PlayingClient();
 
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
+        String authToken = null;
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        try (Scanner scanner = new Scanner(System.in)){
+            while (true) {
+                if (authToken == null) {
+                    System.out.print("[Logged OUT] > ");
+                } else {
+                    System.out.print("[Logged IN] > ");
+                }
 
-        try {
-            facade.login(username, password);
-        } catch (IOException e) {
-            System.out.println("Could not communicate with the server.");
-        } catch (InterruptedException e) {
-            System.out.println("Login was interrupted.");
+                if (!scanner.hasNextLine()) {
+                    break;
+                }
+
+                String input = scanner.nextLine().trim();
+
+                if (authToken == null) {
+                    if ("quit".equals(input)) {
+                        break;
+                    }
+                    if (Objects.equals(input, "help")) {
+                        loggedOut.printHelp();
+                    }
+                    if ("login".equals(input)) {
+                        // later
+                    }
+
+                } else {
+
+                }
+            }
         }
     }
 }
