@@ -10,7 +10,7 @@ public class ClientMain {
     public static void main(String[] args) {
 
         ServerFacade facade = new ServerFacade(8080);
-        LoggedOutClient loggedOut = new LoggedOutClient();
+        LoggedOutClient loggedOut = new LoggedOutClient(facade);
         LoggedInClient loggedIn = new LoggedInClient();
         PlayingClient playing = new PlayingClient();
 
@@ -29,16 +29,21 @@ public class ClientMain {
                 }
 
                 String input = scanner.nextLine().trim();
+                String[] parts = input.split("\\s+");
+                String command = parts[0];
 
                 if (authToken == null) {
-                    if ("quit".equals(input)) {
+                    if ("quit".equals(command)) {
                         break;
                     }
-                    if (Objects.equals(input, "help")) {
+                    if (Objects.equals(command, "help")) {
                         loggedOut.printHelp();
                     }
-                    if ("login".equals(input)) {
-                        // later
+                    if ("register".equals(command)) {
+                        loggedOut.register(parts);
+                    }
+                    if ("login".equals(command)) {
+                        loggedOut.login(parts);
                     }
 
                 } else {
