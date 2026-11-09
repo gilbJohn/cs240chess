@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientMain {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException{
 
         ServerFacade facade = new ServerFacade(8080);
         LoggedOutClient loggedOut = new LoggedOutClient(facade);
@@ -51,22 +51,24 @@ public class ClientMain {
                         loggedIn.printHelp();
                     }
                     if ("logout".equals(command)){
-                        loggedIn.logout();
+                        authToken = loggedIn.logout(authToken);
                     }
                     if ("create".equals(command)) {
-                        loggedIn.createGame();
+                        loggedIn.createGame(parts, authToken);
                     }
                     if ("list".equals(command)) {
-                        loggedIn.listGames();
+                        loggedIn.listGames(authToken);
                     }
                     if ("join".equals(command)) {
-                        loggedIn.joinGame();
+                        loggedIn.joinGame(parts, authToken);
                     }
                     if("quit".equals(command)) {
-                        loggedIn.quit();
+                        break;
                     }
                     if("observe".equals(command)) {
-                        loggedIn.observe();
+                        loggedIn.observe(parts);
+                    } else {
+                        System.out.print("please input a valid command");
                     }
                 }
             }
