@@ -1,6 +1,9 @@
 package client;
 
+import model.GameData;
+
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,14 +76,41 @@ public class LoggedInClient {
 
     public void joinGame(String[] parts, String authToken) throws IOException, InterruptedException, RuntimeException {
         try {
-            facade.joinGame(parts[1], Integer.parseInt(parts[2]), authToken);
+            if (parts.length != 3) {
+                System.out.println("Usage: join <WHITE|BLACK> <GAME_ID>");
+                return;
+            }
+
+            String color = parts[1];
+            GameData game = findGame(Integer.parseInt(parts[2]), authToken);
+
+            facade.joinGame(color, game.gameID(), authToken);
+            BoardRenderer.draw(findGame(game.gameID(), authToken).game().getBoard(), color);
         } catch (IOException | InterruptedException | NumberFormatException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    public void observe(String[] parts) {
+    public void observe(String[] parts, String authToken) throws IOException, InterruptedException {
+        if (parts.length != 2) {
+            System.out.println("Usage: observe <GAME_ID>");
+            return;
+        }
 
+        GameData game = findGame(Integer.parseInt(parts[1]), authToken);
+
+        if(game != null) {
+            BoardRenderer.draw(game.game().getBoard(), "WHITE");
+        }
+    }
+
+    private GameData findGame(int gameID, String authToken) throws IOException, InterruptedException {
+        for(GameData game: facade.listGames(authToken)) {
+            if(game.gameID() == gameID) {
+                return game;
+            }
+        }
+        return null;
     }
 }

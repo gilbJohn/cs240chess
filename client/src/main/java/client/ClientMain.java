@@ -53,7 +53,7 @@ public class ClientMain {
                         case "create" -> loggedIn.createGame(parts, authToken);
                         case "list" -> loggedIn.listGames(authToken);
                         case "join" -> loggedIn.joinGame(parts, authToken);
-                        case "observe" -> loggedIn.observe(parts);
+                        case "observe" -> loggedIn.observe(parts, authToken);
                         default -> System.out.println("Please enter a valid command.");
                     }
                 }
