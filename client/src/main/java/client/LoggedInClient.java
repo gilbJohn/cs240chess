@@ -37,9 +37,9 @@ public class LoggedInClient {
 
         try  {
             String name = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length));
-            System.out.print("GAME ID: " + facade.createGame(parts[1], authToken
-                               + "\n Created " + name + ". Type list to see available games"
-            ));
+            System.out.print("GAME ID: " + facade.createGame(parts[1], authToken)
+                               + "\n Created " + name + ". Type list to see available games \n"
+            );
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
