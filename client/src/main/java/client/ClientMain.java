@@ -35,27 +35,35 @@ public class ClientMain {
                 if ("quit".equals(command)) {
                     break;
                 }
-                if (authToken == null) {
-                    if (Objects.equals(command, "help")) {
-                        loggedOut.printHelp();
-                    }
-                    if ("register".equals(command)) {
-                        authToken = loggedOut.register(parts);
-                    }
-                    if ("login".equals(command)) {
-                        authToken = loggedOut.login(parts);
-                    }
+                try {
+                    if (authToken == null) {
+                        if (Objects.equals(command, "help")) {
+                            loggedOut.printHelp();
+                        }
+                        if ("register".equals(command)) {
+                            authToken = loggedOut.register(parts);
+                        }
+                        if ("login".equals(command)) {
+                            authToken = loggedOut.login(parts);
+                        }
 
-                } else {
-                    switch (command) {
-                        case "help" -> loggedIn.printHelp();
-                        case "logout" -> authToken = loggedIn.logout(authToken);
-                        case "create" -> loggedIn.createGame(parts, authToken);
-                        case "list" -> loggedIn.listGames(authToken);
-                        case "join" -> loggedIn.joinGame(parts, authToken);
-                        case "observe" -> loggedIn.observe(parts, authToken);
-                        default -> System.out.println("Please enter a valid command.");
-                    }
+                    } else {
+                        switch (command) {
+                            case "help" -> loggedIn.printHelp();
+                            case "logout" -> authToken = loggedIn.logout(authToken);
+                            case "create" -> loggedIn.createGame(parts, authToken);
+                            case "list" -> loggedIn.listGames(authToken);
+                            case "join" -> loggedIn.joinGame(parts, authToken);
+                            case "observe" -> loggedIn.observe(parts, authToken);
+                            default -> System.out.println("Please enter a valid command.");
+                        }
+
+                }
+                } catch (IOException | RuntimeException e) {
+                    System.out.print(e.getMessage());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
         }
