@@ -47,6 +47,7 @@ public class BoardRenderer {
             Character.toLowerCase(symbol);
         }
 
+
         return symbol;
     }
 }
