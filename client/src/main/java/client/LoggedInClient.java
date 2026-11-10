@@ -40,9 +40,8 @@ public class LoggedInClient {
 
         try  {
             String name = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length));
-            System.out.print("GAME ID: " + facade.createGame(parts[1], authToken)
-                               + "\n Created " + name + ". Type list to see available games \n"
-            );
+            facade.createGame(name, authToken);
+            System.out.print("\n Created: " + name + ". Type list to see available games \n");
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -63,9 +62,8 @@ public class LoggedInClient {
                 String white = game.whiteUsername() == null ? "Open" : game.whiteUsername();
                 String black = game.blackUsername() == null ? "Open" : game.blackUsername();
 
-                System.out.printf("TOTAL GAMES: %d. NAME: %s (ID: %d) | White: %s | Black: %s%n",
-                        gameIds.size(), game.gameName(), game.gameID(), game.whiteUsername(), game.blackUsername()
-                );
+                System.out.printf("%d. NAME: %s| White: %s | Black: %s%n",
+                        gameIds.size(), game.gameName(), game.whiteUsername(), game.blackUsername());
             }
 
         } catch (IOException | InterruptedException e) {
@@ -82,7 +80,9 @@ public class LoggedInClient {
             }
 
             String color = parts[1];
-            GameData game = findGame(Integer.parseInt(parts[2]), authToken);
+            int realGameID = gameIdFor(parts[2]);
+
+            GameData game = findGame(realGameID, authToken);
 
             facade.joinGame(color, game.gameID(), authToken);
             BoardRenderer.draw(findGame(game.gameID(), authToken).game().getBoard(), color);
@@ -98,7 +98,9 @@ public class LoggedInClient {
             return;
         }
 
-        GameData game = findGame(Integer.parseInt(parts[1]), authToken);
+        int gameID = gameIdFor(parts[1]);
+
+        GameData game = findGame(gameID, authToken);
 
         if(game != null) {
             BoardRenderer.draw(game.game().getBoard(), "WHITE");
@@ -111,6 +113,20 @@ public class LoggedInClient {
                 return game;
             }
         }
+        return null;
+    }
+
+    private Integer gameIdFor(String input) {
+        try {
+            int number = Integer.parseInt(input);
+            if (number >= 1 && number <= gameIds.size()) {
+                return gameIds.get(number - 1);
+            }
+        } catch (NumberFormatException ignored) {
+            // Use the same message for text and out-of-range numbers.
+        }
+
+        System.out.println("Run list and enter one of the game numbers shown.");
         return null;
     }
 }
