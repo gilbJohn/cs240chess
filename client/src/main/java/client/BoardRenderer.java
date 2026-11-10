@@ -43,10 +43,9 @@ public class BoardRenderer {
             case ROOK -> 'R';
             case PAWN -> 'P';
         };
-        if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-            Character.toLowerCase(symbol);
+        if(piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+            return Character.toLowerCase(symbol);
         }
-
 
         return symbol;
     }

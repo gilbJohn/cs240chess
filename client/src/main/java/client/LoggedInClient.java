@@ -17,14 +17,14 @@ public class LoggedInClient {
 
     public void printHelp() {
         System.out.print("""
-                            create <GAME_NAME> - create a chess game
-                            list - show available games
-                            join <WHITE|BLACK> <GAME_NUMBER> - join a game as White or Black
-                            observe <GAME_NUMBER> - watch a game
-                            logout - return to the logged-out menu
-                            quit - exit the client
-                            help - show available commands
-                            """);
+                create <GAME_NAME> - create a chess game
+                list - show available games
+                join <WHITE|BLACK> <GAME_NUMBER> - join a game as White or Black
+                observe <GAME_NUMBER> - watch a game
+                logout - return to the logged-out menu
+                quit - exit the client
+                help - show available commands
+                """);
     }
 
     public String logout(String authToken) throws IOException, InterruptedException {
@@ -33,62 +33,58 @@ public class LoggedInClient {
     }
 
     public void createGame(String[] parts, String authToken) throws IOException, InterruptedException {
-        if(parts.length < 2) {
+        if (parts.length < 2) {
             System.out.print("Usage: create <GAME_NAME>");
             return;
         }
 
-        try  {
-            String name = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length));
-            facade.createGame(name, authToken);
-            System.out.print("\n Created: " + name + ". Type list to see available games \n");
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        String name = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length));
+        facade.createGame(name, authToken);
+        System.out.print("\n Created: " + name + ". Type list to see available games \n");
     }
 
     // I need to define this here I guess
     private final List<Integer> gameIds = new ArrayList<>();
 
     public void listGames(String authToken) throws IOException, InterruptedException {
-        try {
 
-            var games = facade.listGames(authToken);
-            gameIds.clear();
+        var games = facade.listGames(authToken);
+        gameIds.clear();
 
-            for(var game: games) {
-                gameIds.add(game.gameID());
+        for (var game : games) {
+            gameIds.add(game.gameID());
 
-                String white = game.whiteUsername() == null ? "Open" : game.whiteUsername();
-                String black = game.blackUsername() == null ? "Open" : game.blackUsername();
+            String white = game.whiteUsername() == null ? "Open" : game.whiteUsername();
+            String black = game.blackUsername() == null ? "Open" : game.blackUsername();
 
-                System.out.printf("%d. NAME: %s| White: %s | Black: %s%n",
-                        gameIds.size(), game.gameName(), game.whiteUsername(), game.blackUsername());
-            }
-
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            System.out.printf("%d. NAME: %s| White: %s | Black: %s%n",
+                    gameIds.size(), game.gameName(), white, black);
         }
+
 
     }
 
-    public void joinGame(String[] parts, String authToken) throws IOException, InterruptedException, RuntimeException {
-        try {
-            if (parts.length != 3) {
-                System.out.println("Usage: join <WHITE|BLACK> <GAME_ID>");
-                return;
-            }
-
-            String color = parts[1];
-            int realGameID = gameIdFor(parts[2]);
-
-            GameData game = findGame(realGameID, authToken);
-
-            facade.joinGame(color, game.gameID(), authToken);
-            BoardRenderer.draw(findGame(game.gameID(), authToken).game().getBoard(), color);
-        } catch (IOException | InterruptedException | NumberFormatException e) {
-            throw new RuntimeException(e);
+    public void joinGame(String[] parts, String authToken)
+            throws IOException, InterruptedException {
+        if (parts.length != 3) {
+            System.out.println("Usage: join <WHITE|BLACK> <GAME_NUMBER>");
+            return;
         }
+
+        String color = parts[1];
+        Integer gameId = gameIdFor(parts[2]);
+        if (gameId == null) {
+            return;
+        }
+
+        GameData game = findGame(gameId, authToken);
+        if (game == null) {
+            System.out.println("Game no longer available. Run list again.");
+            return;
+        }
+
+        facade.joinGame(color, gameId, authToken);
+        BoardRenderer.draw(game.game().getBoard(), color);
     }
 
 
@@ -98,13 +94,18 @@ public class LoggedInClient {
             return;
         }
 
-        int gameID = gameIdFor(parts[1]);
+        Integer gameID = gameIdFor(parts[1]);
+        if (gameID == null) {
+            return;
+        }
 
         GameData game = findGame(gameID, authToken);
-
-        if(game != null) {
-            BoardRenderer.draw(game.game().getBoard(), "WHITE");
+        if (game == null) {
+            System.out.println("Game no longer available. Run list again.");
+            return;
         }
+
+        BoardRenderer.draw(game.game().getBoard(), "WHITE");
     }
 
     private GameData findGame(int gameID, String authToken) throws IOException, InterruptedException {

@@ -19,27 +19,20 @@ public class LoggedOutClient {
                             """);
     }
 
-    public String register(String[] parts) {
-        try {
+    public String register(String[] parts) throws IOException, InterruptedException{
             if (parts.length != 4) {
                 System.out.println("Usage: register <username> <password> <email>");
                 return null;
             }
+
            return facade.register(parts[1], parts[2], parts[3]);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    public String login(String[] parts) {
-        try {
+    public String login(String[] parts) throws IOException, InterruptedException{
             if (parts.length != 3) {
                 System.out.println("Usage: login <username> <password>");
                 return null;
             }
             return facade.login(parts[1], parts[2]);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
