@@ -1,6 +1,7 @@
 package websocket.messages;
 
 import java.util.Objects;
+import chess.*;
 
 /**
  * Represents a Message the server can send through a WebSocket
@@ -40,4 +41,5 @@ public class ServerMessage {
     public int hashCode() {
         return Objects.hash(getServerMessageType());
     }
+
 }
